@@ -1,0 +1,27 @@
+Room Name:  [TryHackMe]IDOR - Santa’s Little IDOR
+Room Link: https://tryhackme.com/room/idor-aoc2025-zl6MywQid9
+
+Bonus Task Writeup (IDOR)
+
+This room demonstrates an Insecure Direct Object Reference (IDOR) vulnerability.
+
+After logging in, the browser’s Network tab shows an endpoint that takes a user_id. Because the server relies on that ID without properly enforcing authorization, it’s possible to access data that shouldn’t be available by changing the ID value.
+
+When clicking the “eye” icon to view a child’s details, another API endpoint appears. The request includes a value that is Base64-encoded, which is easy to recognize and decode/encode.
+
+Goal: find the id_number of the child whose birthdate is 2019-04-17.
+
+Approach:
+
+Use Python requests.Session() to log in and capture the JWT access token.
+
+Add the token to headers using: Authorization: Bearer <token>.
+
+Enumerate child IDs by querying the child details endpoint and check each response’s birthdate until it matches 2019-04-17.
+
+Once the matching child is found, note the parent_id (if present) and query the parent endpoint via the vulnerable user_id parameter.
+
+From the parent response, read the children list and extract the matching child’s id_number.
+
+Note: After checking correct answer, I realized the platform only required the child_id, so the final parent lookup wasn’t necessary. My method still demonstrates the same IDOR concept and how chaining endpoints can expose more sensitive data than intended.It is recommended to use Burpsuite but i am
+just looking for excuses to write some code.
